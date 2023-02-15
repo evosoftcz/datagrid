@@ -432,6 +432,12 @@ class DataGrid extends Control
     protected ?int $maxColLabelForRows = null;
 
 
+    protected bool $useSecondarySearchResetButton = false;
+
+	/**
+	 * @param IContainer|null $parent
+	 * @param string|null $name
+	 */
 	public function __construct(?IContainer $parent = null, ?string $name = null)
 	{
 		if ($parent !== null) {
@@ -719,6 +725,7 @@ class DataGrid extends Control
 		$template->rowLabels = $this->rowLabels;
 		$template->columnForRowLabels = $this->columnForRowLabels;
 		$template->maxColLabelForRows = $this->maxColLabelForRows;
+        $template->useSecondarySearchResetButton = $this->useSecondarySearchResetButton;
 
 		/**
 		 * Walkaround for Latte (does not know $form in snippet in {form} etc)
@@ -2268,6 +2275,23 @@ class DataGrid extends Control
 		return $this->hasColumnReset;
 	}
 
+	/**
+     * @return bool
+     */
+    public function isUseSecondarySearchResetButton(): bool
+    {
+        return $this->useSecondarySearchResetButton;
+    }
+
+    /**
+     * @param  bool  $useSecondarySearchResetButton
+     * @return DataGrid
+     */
+    public function setUseSecondarySearchResetButton(bool $useSecondarySearchResetButton = true): DataGrid
+    {
+        $this->useSecondarySearchResetButton = $useSecondarySearchResetButton;
+        return $this;
+    }
 
 	/**
 	 * @param array<Filter> $filters

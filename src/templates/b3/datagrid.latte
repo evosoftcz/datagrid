@@ -58,6 +58,11 @@
 								{var $i = $i+1}
 							</div>
 							<div class="col-sm-12" n:if="!$control->hasAutoSubmit()">
+								{snippet outerFilterResetButton}
+                                <a n:if="$filter_active && $useSecondarySearchResetButton" n:href="resetFilter!" title="{='ublaboo_datagrid.reset_filter'|translate}" class="ajax btn btn-danger btn-xs reset-filter d-flex align-items-center me-2">
+                                    <i class="{$iconPrefix}undo fa-fw"></i>
+                                </a>
+                                {/snippet}
 								<div class="text-right datagrid-manual-submit">
 									{input $filter['filter']['submit']}
 								</div>
@@ -222,6 +227,11 @@
 						{/foreach}
 						<th n:if="$actions || $control->isSortable() || $itemsDetail || $inlineEdit || $inlineAdd" class="col-action text-center">
 							{if !$control->hasAutoSubmit() && !$control->hasOuterFilterRendering()}
+								{snippet innerFilterResetButton}
+                                <a n:if="$filter_active && $useSecondarySearchResetButton" n:href="resetFilter!" title="{='ublaboo_datagrid.reset_filter'|translate}" class="ajax btn btn-danger btn-xs reset-filter d-flex align-items-center me-2">
+                                    <i class="{$iconPrefix}undo fa-fw"></i>
+                                </a>
+                                {/snippet}
 								{input $filter['filter']['submit']}
 							{/if}
 						</th>
