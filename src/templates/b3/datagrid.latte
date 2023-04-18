@@ -229,7 +229,7 @@
 							{if !$control->hasAutoSubmit() && !$control->hasOuterFilterRendering()}
 								<div class="d-flex">
 									{snippet innerFilterResetButton}
-									<a n:if="$filter_active && $useSecondarySearchResetButton" n:href="resetFilter!" title="{='ublaboo_datagrid.reset_filter'|translate}" class="ajax btn btn-danger reset-filter h-100  d-flex justify-content-center  align-items-center p-2 mr-2">
+									<a n:if="$filter_active && $useSecondarySearchResetButton" n:href="resetFilter!" title="{='ublaboo_datagrid.reset_filter'|translate}" class="ajax btn btn-danger reset-filter h-100  d-flex justify-content-center  align-items-center p-2 px-3 mr-2">
 										<i class="{$iconPrefix}undo fa-fw"></i>
 									</a>
 									{/snippet}
