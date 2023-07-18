@@ -325,12 +325,19 @@
 						{/foreach}
 						<th n:if="$actions || $control->isSortable() || $itemsDetail || $inlineEdit || $inlineAdd" class="col-action text-center">
 							{if !$control->hasAutoSubmit() && !$control->hasOuterFilterRendering()}
+								<div class="d-flex justify-content-end">
 								{snippet innerFilterResetButton}
-                                <a n:if="$filter_active && $useSecondarySearchResetButton" n:href="resetFilter!" title="{='ublaboo_datagrid.reset_filter'|translate}" class="ajax btn btn-danger btn-xs reset-filter d-flex align-items-center me-2">
+								{* todo: HERE*}
+
+                              <a n:if="$filter_active && $useSecondarySearchResetButton" n:href="resetFilter!" title="{='ublaboo_datagrid.reset_filter'|translate}" class="ajax">
+                              <button class="btn btn-sm btn-danger mx-2  reset-filter  d-flex justify-content-center align-items-center text-white">
                                     <i class="{$iconPrefix}undo fa-fw"></i>
+                               </button>
                                 </a>
                                 {/snippet}
 								{input $filter['filter']['submit']}
+								</div>
+
 							{/if}
 						</th>
 					</tr>
