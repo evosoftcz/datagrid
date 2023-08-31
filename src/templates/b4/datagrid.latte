@@ -109,7 +109,7 @@
 				</div>
 			</div>
 		</div>
-		{form filter, class => 'ajax'}
+		{form filter, class => 'ajax', autocomplete => 'off'}
 			{if $control->hasOuterFilterRendering()}
 				{block outer-filters}
 					<div class="row text-right datagrid-collapse-filters-button-row" n:if="$control->hasCollapsibleOuterFilters()">
@@ -427,7 +427,7 @@
                                                 {/foreach}
                                                 <div class="col-auto" n:if="$control->isSortable()">
                                                     <span class="handle-sort">
-                                                        <a class="btn btn-sm">
+                                                        <a class="btn btn-sm p-0 rounded-0">
                                                             <i n:block="icon-arrows-v" class="fa-fw {$iconPrefix}arrows-v"></i>
                                                         </a>
                                                     </span>
