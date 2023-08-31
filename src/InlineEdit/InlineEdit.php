@@ -149,7 +149,7 @@ class InlineEdit
 		}
 
 		$a->appendAttribute('class', 'datagrid-inline-edit-trigger');
-
+		$a->appendAttribute('class', 'fa-fw');
 		return $a;
 	}
 
