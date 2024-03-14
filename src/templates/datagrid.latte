@@ -528,10 +528,16 @@
                     </tbody>
 				{/block}
 				{block tfoot}
-					<tfoot n:snippet="pagination" {if !$control->isNajaCache()}data-naja-snippet-cache="off"{/if}>
+				{/block}
+			</table>
+		{/form}
+	{/snippetArea}
+	</div>
+</div>
+<div class="mt-2" n:snippet="pagination" {if !$control->isNajaCache()}data-naja-snippet-cache="off"{/if}>
 						{if $control->isPaginated() || $filter_active}
-							<tr n:block="pagination">
-								<td colspan="{$control->getColumnsCount()}" n:if="!$control->isTreeView()" class="row-grid-bottom">
+							<div n:block="pagination">
+								<div colspan="{$control->getColumnsCount()}" n:if="!$control->isTreeView()" class="row-grid-bottom">
 									<div class="row mx-0 fixed-footer">
 										<div class="col-4 d-flex justify-content-start align-items-center ps-0">
 											<div class="{block datagrid-fixed-footer-per-page}{/block}">
@@ -579,17 +585,10 @@
 											</div>
 										</div>
 									</div>
-								</td>
-							</tr>
+								</div>
+							</div>
 						{/if}
-					</tfoot>
-				{/block}
-			</table>
-		{/form}
-	{/snippetArea}
-	</div>
 </div>
-
 
 {define inlineAddRow}
 	{if $inlineAdd->shouldBeRendered()}
