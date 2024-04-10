@@ -3483,7 +3483,7 @@ class DataGrid extends Control
 		}
 
         if (empty($sort[$this->getPrimaryKey()])) {
-            $sort[$this->getPrimaryKey()] = 'DESC';
+            $sort[$this->getPrimaryKey()] = 'ASC';
         }
 
         if ($sortCallback === null && isset($column)) {
