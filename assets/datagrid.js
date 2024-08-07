@@ -79,8 +79,8 @@ if (typeof naja !== "undefined") {
 
 
 	dataGridRegisterAjaxCall = function (params) {
-        var method = params.type || 'GET';
-        var data = params.data || null;
+		var method = params.type || 'GET';
+		var data = params.data || null;
 
 		naja.makeRequest(method, params.url, data, {})
 			.then(params.success)
@@ -344,23 +344,23 @@ document.addEventListener('change', function(e) {
 
 
 window.datagridSerializeUrl = function(obj, prefix) {
-var str = [];
-for(var p in obj) {
-	if (obj.hasOwnProperty(p)) {
-		var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
-		if (v !== null && v !== "") {
-			if (typeof v == "object") {
-				var r = window.datagridSerializeUrl(v, k);
+	var str = [];
+	for(var p in obj) {
+		if (obj.hasOwnProperty(p)) {
+			var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+			if (v !== null && v !== "") {
+				if (typeof v == "object") {
+					var r = window.datagridSerializeUrl(v, k);
 					if (r) {
 						str.push(r);
 					}
-			} else {
-				str.push(encodeURIComponent(k) + "=" + encodeURIComponent(v));
+				} else {
+					str.push(encodeURIComponent(k) + "=" + encodeURIComponent(v));
+				}
 			}
 		}
 	}
-}
-return str.join("&");
+	return str.join("&");
 }
 ;
 
@@ -576,7 +576,7 @@ dataGridRegisterExtension('datagrid.sort', {
 			results = [];
 			for (key in ref) {
 				href = ref[key];
-				results.push($('#datagrid-sort-' + payload._datagrid_name + '-' + key).attr('href', href));
+				results.push($('#datagrid-sort-' + key).attr('href', href));
 			}
 			return results;
 		}
@@ -619,7 +619,6 @@ dataGridRegisterExtension('datargid.item_detail', {
 			grid_fullname = payload._datagrid_name;
 			row_detail = $('.item-detail-' + grid_fullname + '-id-' + id);
 			row_detail.toggleClass('toggled');
-			row_detail.find('.item-detail-content').css('display', 'none');
 			return row_detail.find('.item-detail-content').slideToggle('fast');
 		}
 	}
