@@ -218,14 +218,14 @@ class ArrayDataSource implements IDataSource
 							if (strpos($row_value, strtolower(Strings::toAscii($excludedWord))) !== false) {
 								return false;
 							}
-						}
-
-						if (!$is_negation_search) {
-							return strpos($row_value, strtolower(Strings::toAscii($word))) !== false;
+						} else {
+							if (strpos($row_value, strtolower(Strings::toAscii($word))) === false) {
+								return false;
+							}
 						}
 					} else {
-						if (strpos($row_value, strtolower(Strings::toAscii($word))) !== false) {
-							return true;
+						if (strpos($row_value, strtolower(Strings::toAscii($word))) === false) {
+							return false;
 						}
 					}
 				}
