@@ -30,10 +30,10 @@ class DibiFluentPostgreDataSource extends DibiFluentDataSource
 			$column = '[' . $column . ']::varchar';
 			if ($filter->isSpecialChars()) {
 				if ($value === Filter\FilterText::TOKEN_EMPTY) { // Handle single '#'
-					$this->data_source->where("($column IS NULL OR $column = '')");
+					$this->data_source->where("($column IS NULL OR TRIM($column) = '')");
 					continue;
 				} else if ($value === Filter\FilterText::TOKEN_NEGATION . Filter\FilterText::TOKEN_EMPTY) {
-					$this->data_source->where("($column IS NOT NULL AND $column <> '')");
+					$this->data_source->where("($column IS NOT NULL AND TRIM($column) <> '')");
 					continue;
 				}
 				$value = str_replace(Filter\FilterText::TOKEN_EMPTY_ESCAPED, Filter\FilterText::TOKEN_EMPTY, $value);
@@ -108,7 +108,7 @@ class DibiFluentPostgreDataSource extends DibiFluentDataSource
 				$key = "elem->>'" . $key . "'";
 				if ($filter->isSpecialChars()) {
 					if ($value === Filter\FilterText::TOKEN_EMPTY) { // Handle single '#'
-						$where = "($key IS NULL OR $key = '')";
+						$where = "($key IS NULL OR TRIM($key) = '')";
 						$this->data_source->where(
 							"EXISTS (
                             SELECT 1
@@ -118,7 +118,7 @@ class DibiFluentPostgreDataSource extends DibiFluentDataSource
 						);
 						continue;
 					} else if ($value === Filter\FilterText::TOKEN_NEGATION . Filter\FilterText::TOKEN_EMPTY) {
-						$where = "($key IS NOT NULL AND $key <> '')";
+						$where = "($key IS NOT NULL AND TRIM($key) <> '')";
 						$this->data_source->where(
 							"EXISTS (
                             SELECT 1
