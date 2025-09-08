@@ -131,4 +131,20 @@ abstract class FilterableColumn
 
 		return $this->grid->addFilterDateRange($this->key, $this->name, $column, $name_second);
 	}
+
+
+	/**
+	 * Column must be datatype of jsonb
+	 * @param string|array|null $arrayKeys Array keys of json column
+	 * @return Ublaboo\DataGrid\Filter\FilterText
+	 */
+	public function setFilterJSON($arrayKeys = null)
+	{
+		$columns = [$this->column];
+		if ($arrayKeys !== null) {
+			$arrayKeys = is_string($arrayKeys) ? [$arrayKeys] : $arrayKeys;
+		}
+
+		return $this->grid->addFilterJSON($this->key, $this->name, $columns, $arrayKeys);
+	}
 }

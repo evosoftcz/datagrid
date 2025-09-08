@@ -1,0 +1,174 @@
+<?php
+
+/**
+ * @copyright   Copyright (c) 2015 ublaboo <ublaboo@paveljanda.com>
+ * @author      Pavel Janda <me@paveljanda.com>
+ * @package     Ublaboo
+ */
+
+namespace Ublaboo\DataGrid\Filter;
+
+use Nette;
+use Ublaboo\DataGrid\DataGrid;
+
+class FilterJSON extends Filter
+{
+	/** Query that is exactly equal to '#' returns empty/null values */
+	const TOKEN_EMPTY = '#';
+	/** However, if your friend is named '#' and you really want to find him, you have to type this */
+	const TOKEN_EMPTY_ESCAPED = '\#';
+	/** Query that contains words that start with '!', excludes those words from search results */
+	const TOKEN_NEGATION = '!';
+	/** However, if your friend's name starts with '!', you have to type this */
+	const TOKEN_NEGATION_ESCAPED = '\!';
+
+	/**
+	 * @var string
+	 */
+	protected $template = 'datagrid_filter_text.latte';
+
+	/**
+	 * @var string
+	 */
+	protected $type = 'text';
+
+	/**
+	 * @var bool
+	 */
+	protected $exact = false;
+
+	/**
+	 * @var bool
+	 */
+	protected $split_words_search = true;
+
+	/**
+	 * @var bool
+	 */
+	protected $enable_special_chars = true;
+
+    /**
+     * @var array
+     */
+    protected $arrayKeys = [];
+
+
+    /**
+     * @param DataGrid $grid
+     * @param string   $key
+     * @param string   $name
+     * @param string   $options
+     * @param string   $column
+     */
+    public function __construct($grid, $key, $name, $column, $arrayKeys)
+    {
+        parent::__construct($grid, $key, $name, $column, $arrayKeys);
+
+        $this->arrayKeys = $arrayKeys;
+    }
+
+
+	/**
+	 * Adds text field to filter form
+	 * @param Nette\Forms\Container $container
+	 */
+	public function addToFormContainer(Nette\Forms\Container $container)
+	{
+		$container->addText($this->key, $this->name);
+
+		$this->addAttributes($container[$this->key]);
+
+		if ($this->getPlaceholder()) {
+			$container[$this->key]->setAttribute('placeholder', $this->getPlaceholder());
+		}
+	}
+
+
+	/**
+	 * Return array of conditions to put in result [column1 => value, column2 => value]
+	 * 	If more than one column exists in fitler text,
+	 * 	than there is OR clause put betweeen their conditions
+	 * Or callback in case of custom condition callback
+	 * @return array|callable
+	 */
+	public function getCondition()
+	{
+		return array_fill_keys($this->arrayKeys, $this->getValue());
+	}
+
+
+	/**
+	 * @return boolean
+	 */
+	public function isExactSearch()
+	{
+		return $this->exact;
+	}
+
+
+	/**
+	 * @param boolean $exact
+	 * @return FilterText
+	 */
+	public function setExactSearch($exact = true)
+	{
+		$this->exact = $exact;
+		return $this;
+	}
+
+
+	/**
+	 * @param bool $split_words_search
+	 * @return FilterText
+	 */
+	public function setSplitWordsSearch($split_words_search)
+	{
+		$this->split_words_search = (bool) $split_words_search;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasSplitWordsSearch()
+	{
+		return $this->split_words_search;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isSpecialChars()
+	{
+		return $this->enable_special_chars;
+	}
+
+    /**
+     * @param bool $enabled
+     * @return FilterText
+     */
+    public function setSpecialChars($enabled)
+    {
+        $this->enable_special_chars = (bool) $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getColumn()
+    {
+        return $this->column;
+    }
+
+    /**
+     * @return array
+     */
+    public function getJSONArrayKeys()
+    {
+        return $this->arrayKeys;
+    }
+}

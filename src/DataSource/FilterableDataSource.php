@@ -44,6 +44,8 @@ abstract class FilterableDataSource
 						$this->applyFilterDateRange($filter);
 					} elseif ($filter instanceof Filter\FilterRange) {
 						$this->applyFilterRange($filter);
+					} elseif ($filter instanceof Filter\FilterJSON) {
+						$this->applyFilterJSON($filter);
 					}
 				}
 			}

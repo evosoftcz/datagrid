@@ -387,20 +387,20 @@ class DataGrid extends Nette\Application\UI\Control
 	 */
 	private $custom_paginator_template;
 
-    /**
-     * @var string|null
-     */
-    private $componentFullName;
+	/**
+	 * @var string|null
+	 */
+	private $componentFullName;
 
-    /**
-     * @var bool
-     */
-    protected $rememberState = true;
+	/**
+	 * @var bool
+	 */
+	protected $rememberState = true;
 
-    /**
-     * @var SessionSection
-     */
-    protected $gridSession;
+	/**
+	 * @var SessionSection
+	 */
+	protected $gridSession;
 
 	/**
 	 * @param Nette\ComponentModel\IContainer|NULL $parent
@@ -445,17 +445,17 @@ class DataGrid extends Nette\Application\UI\Control
 		$this->onFiltersAssembled[] = [$this, 'sendNonEmptyFiltersInPayload'];
 
 		$this->monitor(
-            Presenter::class,
-            function (Presenter $presenter): void {
-                /**
-                 * Get session
-                 */
-                if ($this->rememberState || $this->canHideColumns()) {
-                    $this->gridSession = $presenter->getSession($this->getSessionSectionName());
-                }
+			Presenter::class,
+			function (Presenter $presenter): void {
+				/**
+				 * Get session
+				 */
+				if ($this->rememberState || $this->canHideColumns()) {
+					$this->gridSession = $presenter->getSession($this->getSessionSectionName());
+				}
 
-                $this->componentFullName = $this->lookupPath();
-            });
+				$this->componentFullName = $this->lookupPath();
+			});
 
 		$this->auto_submit = false;
 
@@ -1373,6 +1373,28 @@ class DataGrid extends Nette\Application\UI\Control
 		$this->addFilterCheck($key);
 
 		return $this->filters[$key] = new Filter\FilterDateRange($this, $key, $name, $column, $name_second);
+	}
+
+
+	/**
+	 * Add filter fot text search
+	 * @param string       $key
+	 * @param string       $name
+	 * @param array|string $columns
+	 * @return Filter\FilterText
+	 * @throws DataGridException
+	 */
+	public function addFilterJSON($key, $name, $columns = null, $arrayKeys = null)
+	{
+		$columns = $columns === null? [$key] : (is_string($columns) ? [$columns] : $columns);
+
+		if (!is_array($arrayKeys)) {
+			throw new DataGridException('Filter JSON can accept only array or string.');
+		}
+
+		$this->addFilterCheck($key);
+
+		return $this->filters[$key] = new Filter\FilterJSON($this, $key, $name, $columns, $arrayKeys);
 	}
 
 
@@ -3410,18 +3432,18 @@ class DataGrid extends Nette\Application\UI\Control
 	 *                                   INTERNAL                                   *
 	 ********************************************************************************/
 
-    /**
-     * Gets component's full name in component tree
-     * @throws DataGridHasToBeAttachedToPresenterComponentException
-     */
-    public function getFullName(): string
-    {
-        if ($this->componentFullName === null) {
-            throw new DataGridHasToBeAttachedToPresenterComponentException('Datagrid needs to be attached to presenter in order to get its full name.');
-        }
+	/**
+	 * Gets component's full name in component tree
+	 * @throws DataGridHasToBeAttachedToPresenterComponentException
+	 */
+	public function getFullName(): string
+	{
+		if ($this->componentFullName === null) {
+			throw new DataGridHasToBeAttachedToPresenterComponentException('Datagrid needs to be attached to presenter in order to get its full name.');
+		}
 
-        return $this->componentFullName;
-    }
+		return $this->componentFullName;
+	}
 
 	/**
 	 * Tell grid filters to by submitted automatically
@@ -3569,7 +3591,7 @@ class DataGrid extends Nette\Application\UI\Control
 
 		if (!($parent instanceof PresenterComponent)) {
 			throw new DataGridHasToBeAttachedToPresenterComponentException(
-                "DataGrid is attached to: '" . ($parent ? get_class($parent) : 'null') . "', but instance of PresenterComponent is needed."
+				"DataGrid is attached to: '" . ($parent ? get_class($parent) : 'null') . "', but instance of PresenterComponent is needed."
 			);
 		}
 

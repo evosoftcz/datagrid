@@ -14,6 +14,7 @@ use Ublaboo\DataGrid\Exception\DataGridDateTimeHelperException;
 use Ublaboo\DataGrid\Filter\Filter;
 use Ublaboo\DataGrid\Filter\FilterDate;
 use Ublaboo\DataGrid\Filter\FilterDateRange;
+use Ublaboo\DataGrid\Filter\FilterJSON;
 use Ublaboo\DataGrid\Filter\FilterMultiSelect;
 use Ublaboo\DataGrid\Filter\FilterRange;
 use Ublaboo\DataGrid\Filter\FilterText;
@@ -180,11 +181,11 @@ class ArrayDataSource implements IDataSource
 					}
 				}
 
-				if ($filter instanceof FilterText && $filter->isExactSearch()) {
+				if (($filter instanceof FilterText || $filter instanceof FilterJSON) && $filter->isExactSearch()) {
 					return $row[$column] == $value;
 				}
 
-				if ($filter instanceof FilterText && $filter->hasSplitWordsSearch() === false) {
+				if (($filter instanceof FilterText || $filter instanceof FilterJSON) && $filter->hasSplitWordsSearch() === false) {
 					$words = [$value];
 				} else {
 					$words = explode(' ', $value);
@@ -193,7 +194,7 @@ class ArrayDataSource implements IDataSource
 				$row_value = strtolower(Strings::toAscii($row[$column]));
 
 				foreach ($words as $word) {
-					if ($filter instanceof FilterText && $filter->isSpecialChars()) {
+					if (($filter instanceof FilterText || $filter instanceof FilterJSON) && $filter->isSpecialChars()) {
 						if ($word === FilterText::TOKEN_NEGATION . FilterText::TOKEN_EMPTY) {
 							return !empty($row_value);
 						}
