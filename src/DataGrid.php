@@ -402,6 +402,32 @@ class DataGrid extends Nette\Application\UI\Control
 	 */
 	protected $gridSession;
 
+
+	/**
+	 * @var bool determines if the datagrid should have
+	 * an additional "Reset Filter" button in the "Actions" cell.
+	 */
+	protected $displayExtraResetFilter = false;
+
+	/**
+	 * Sets the display option if the datagrid should have an
+	 * additional "Reset Filter" button in the "Action" cell.
+	 * @param ?bool $value default is true.
+	 * @return void
+	 */
+	public function setDisplayExtraResetFilter(?bool $value = true): void
+	{
+		$this->displayExtraResetFilter = $value;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function getDisplayExtraResetFilter(): bool
+	{
+		return $this->displayExtraResetFilter;
+	}
+
 	/**
 	 * @param Nette\ComponentModel\IContainer|NULL $parent
 	 * @param string                               $name

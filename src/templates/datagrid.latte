@@ -231,6 +231,13 @@
 						<th n:if="$actions || $control->isSortable() || $items_detail || $inlineEdit || $inlineAdd" class="col-action text-center">
 							{if !$control->hasAutoSubmit() && !$control->hasOuterFilterRendering()}
 								{input $filter['filter']['submit']}
+
+                                {if $control->getDisplayExtraResetFilter()}
+                                 <div style="height: 4px"></div>
+                                 <div>
+                                 	<a n:href="resetFilter!" class="ajax btn btn-danger btn-sm reset-filter">{='ublaboo_datagrid.reset_filter'|translate}</a>
+                                  </div>
+                                 {/if}
 							{/if}
 						</th>
 					</tr>
