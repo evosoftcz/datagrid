@@ -233,10 +233,20 @@
 								{input $filter['filter']['submit']}
 
                                 {if $control->getDisplayExtraResetFilter()}
-                                 <div style="height: 4px"></div>
-                                 <div>
-                                 	<a n:href="resetFilter!" class="ajax btn btn-danger btn-sm reset-filter">{='ublaboo_datagrid.reset_filter'|translate}</a>
-                                  </div>
+                                	{if $control->hasAnyRangeFilters()}
+                                 		<div style="height: 4px"></div>
+                                 		<div>
+                                 		<a n:href="resetFilter!" class="ajax btn btn-danger btn-sm reset-filter">
+											{='ublaboo_datagrid.reset_filter'|translate}
+										</a>
+                                  		</div>
+									{else}
+										<span>
+											<a n:href="resetFilter!" class="ajax btn btn-danger btn-sm reset-filter">
+												{='ublaboo_datagrid.reset_filter'|translate}
+											</a>
+										</span>
+									{/if}
                                  {/if}
 							{/if}
 						</th>

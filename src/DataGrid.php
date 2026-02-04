@@ -407,7 +407,7 @@ class DataGrid extends Nette\Application\UI\Control
 	 * @var bool determines if the datagrid should have
 	 * an additional "Reset Filter" button in the "Actions" cell.
 	 */
-	protected $displayExtraResetFilter = false;
+	protected $displayExtraResetFilter = true;
 
 	/**
 	 * Sets the display option if the datagrid should have an
@@ -426,6 +426,25 @@ class DataGrid extends Nette\Application\UI\Control
 	public function getDisplayExtraResetFilter(): bool
 	{
 		return $this->displayExtraResetFilter;
+	}
+
+	/**
+	 * Checks if datagrid has any RANGE filters:
+	 * if so, the extra "Reset Filter" button will be displayed as a block element (div),
+	 * otherwise - as an inline element (span).
+	 * @return bool
+ 	*/
+	public function hasAnyRangeFilters(): bool
+	{
+		$rangeFiltersTypes = ["date-range", "range"];
+		foreach ($this->filters as $filter)
+		{
+			if (in_array($filter->getType(), $rangeFiltersTypes))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
