@@ -129,7 +129,7 @@
 
 				{* === Toolbar above the table === *}
 				{if $toolbarButtons || $exports || $control->canHideColumns() || $inlineAdd}
-					<div class="sticky-top d-flex flex-wrap align-items-center justify-content-between mb-2" style="z-index: 1020;">
+					<div class="sticky-top d-flex flex-wrap align-items-center justify-content-between mb-2" style="z-index: 50;">
 						{if $control->getTitle()}
 							<h5 class="m-0">{$control->getTitle()|noescape}</h5>
 						{/if}
