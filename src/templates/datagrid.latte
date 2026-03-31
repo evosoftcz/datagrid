@@ -23,7 +23,7 @@
 {varType string $getCheckValue_functionName}
 {php $getCheckValue_functionName = 'getCheckValue_' . preg_replace('/[^a-zA-Z0-9]/', '', $control->getFullName())}
 
-<div class="datagrid datagrid-{$control->getFullName()} {$control->getClass()}" data-refresh-state="{link refreshState!}">
+<div class="{block datagrid-class}datagrid datagrid-{$control->getFullName()} table-responsive{/block} {$control->getClass()}" data-refresh-state="{link refreshState!}">
 	<div n:snippet="grid" class="datagrid-main-snippet" {if !$control->isNajaCache()}data-naja-snippet-cache="off"{/if}>
 		{snippetArea gridSnippets}
 
@@ -128,13 +128,41 @@
 				{/if}
 				<div class="datagrid-topbar d-flex justify-content-between align-items-center mb-2">
 
-	<div class="datagrid-title">
-		{if $control->getTitle()}
-			<h5 class="m-0">{$control->getTitle()|noescape}</h5>
-		{/if}
-	</div>
 
-	<div class="datagrid-toolbar d-flex gap-1">
+		<div class="row-group-actions">
+			<div class="row mx-0">
+				{if $control->getTitle()}
+					<h5 class="m-0">{$control->getTitle()|noescape}</h5>
+				{/if}
+
+				{if $hasGroupActions}
+					{block group_actions}
+						<div class="d-flex flex-row gap-1">
+							{if $control->shouldShowSelectedRowsCount()}
+								<div class="d-flex align-items-center">
+									<span class="datagrid-selected-rows-count text-muted"></span>
+								</div>
+							{/if}
+							<div class="d-inline-flex">
+								{foreach $filter['group_action']->getControls() as $form_control}
+									{if $form_control instanceof \Nette\Forms\Controls\SubmitButton && $form_control->getName() === 'submit'}
+										{input $form_control, class => 'btn btn-primary ms-1', disabled => TRUE}
+									{elseif $form_control instanceof \Nette\Forms\Controls\SubmitButton}
+										{input $form_control, disabled => TRUE}
+									{elseif $form_control->getName() == 'group_action'}
+										{input $form_control, class => 'form-select select-one', disabled => TRUE}
+									{else}
+										{input $form_control}
+									{/if}
+								{/foreach}
+							</div>
+						</div>
+					{/block}
+				{/if}
+			</div>
+		</div>
+
+	<div class="datagrid-toolbar my-2 d-flex flex-row align-baseline justify-content-end gap-1">
 
 		<div n:snippet="toolbarButtons" class="d-flex gap-1">
 			{foreach $toolbarButtons as $toolbar_button}
