@@ -547,63 +547,57 @@
 						{/block}
 						{block tfoot}
 							<tfoot n:snippet="pagination" {if !$control->isNajaCache()}data-naja-snippet-cache="off"{/if}>
-							{if $control->isPaginated() || $filter_active}
-								<tr n:block="pagination">
-									<td colspan="{$control->getColumnsCount()}" n:if="!$control->isTreeView()" class="row-grid-bottom">
-										<div class="row mx-0 fixed-footer">
-											<div class="col-md-auto col-6 order-md-1 order-2 d-flex justify-content-start align-items-center ps-0">
-												<div class="{block datagrid-fixed-footer-per-page}{/block}">
-													<div class="col-items">
-														<small class="text-muted" n:if="$control->isPaginated()">
-															({var $paginator = $control['paginator']->getPaginator()}
-
-															{if $control->getPerPage() === 'all'}
-															{='ublaboo_datagrid.items'|translate}: {='ublaboo_datagrid.all'|translate} ({sizeof($rows)})
-														{else}
-															{='ublaboo_datagrid.items'|translate}: {$paginator->getOffset() > 0 ? $paginator->getOffset() + 1 : ($paginator->getItemCount() > 0 ? 1 : 0)} - {sizeof($rows) + $paginator->getOffset()}
-															{='ublaboo_datagrid.from'|translate} {$paginator->getItemCount()}
-															{/if})
-														</small>
-													</div>
-												</div>
-											</div>
-											<div class="col-md col-sm-12 order-md-2 order-1 pb-md-0 pb-1 d-flex justify-content-center align-items-center">
-												<div class="{block datagrid-fixed-footer-paginator}{/block}">
-													<div class="col-pagination text-center">
-														{control paginator}
-													</div>
-												</div>
-											</div>
-											<div class="col-md-auto col-6 order-3 d-flex justify-content-end pe-0">
-												<div class="{block datagrid-fixed-footer-select-rows}{/block}">
-													<div class="row mx-0">
-														<div class="col-12 px-0">
-															<div class="col-per-page d-inline-flex">
-																<a n:if="$show_default_sort_button" n:href="defaultSort!" class="ajax btn btn-secondary btn-sm default-sort d-flex align-items-center me-2" title="{='ublaboo_datagrid.default_sort'|translate}">
-																	<i class="{$iconPrefix}sort fa-fw"></i>
-																</a>
-																<a n:if="$filter_active" n:href="resetFilter!" class="ajax btn btn-danger btn-sm reset-filter d-flex align-items-center me-2" title="{='ublaboo_datagrid.reset_filter'|translate}">
-																	<i class="{$iconPrefix}undo fa-fw"></i>
-																</a>
-																{if $control->isPaginated()}
-																	{input $filter['perPage'], data-autosubmit-per-page => $control->hasAutoSubmit(), class => 'input-sm form-select select-one'}
-																	{if !$control->hasAutoSubmit()}
-																		{input $filter['perPage_submit'], class => 'datagrid-per-page-submit btn btn-sm btn-secondary ms-2'}
-																	{/if}
-																{/if}
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</td>
-								</tr>
-							{/if}
 							</tfoot>
 						{/block}
 					</table>
 				</div>
+
+				{* === Footer below the table (outside table-responsive so it doesn't scroll horizontally) === *}
+				{if $control->isPaginated() || $filter_active}
+					<div n:snippet="paginationFooter" class="d-flex flex-nowrap align-items-center justify-content-between row-grid-bottom ms-auto py-2 px-3"
+					{if !$control->isNajaCache()}data-naja-snippet-cache="off"{/if} style="z-index: 50;">
+						<div class="d-flex align-items-center datagrid-footer-sticky-left">
+							<div class="{block datagrid-fixed-footer-per-page}{/block}">
+								<div class="col-items">
+									<small class="text-muted" n:if="$control->isPaginated()">
+										({var $paginator = $control['paginator']->getPaginator()}
+										{if $control->getPerPage() === 'all'}
+										{='ublaboo_datagrid.items'|translate}: {='ublaboo_datagrid.all'|translate} ({sizeof($rows)})
+									{else}
+										{='ublaboo_datagrid.items'|translate}: {$paginator->getOffset() > 0 ? $paginator->getOffset() + 1 : ($paginator->getItemCount() > 0 ? 1 : 0)} - {sizeof($rows) + $paginator->getOffset()}
+										{='ublaboo_datagrid.from'|translate} {$paginator->getItemCount()}
+										{/if})
+									</small>
+								</div>
+							</div>
+						</div>
+						<div class="d-flex align-items-center datagrid-footer-sticky-center">
+							<div class="{block datagrid-fixed-footer-paginator}{/block}">
+								<div class="col-pagination text-center">
+									{control paginator}
+								</div>
+							</div>
+						</div>
+						<div class="d-flex align-items-center datagrid-footer-sticky-right">
+							<div class="{block datagrid-fixed-footer-select-rows}{/block}">
+								<div class="col-per-page d-inline-flex">
+									<a n:if="$show_default_sort_button" n:href="defaultSort!" class="ajax btn btn-secondary btn-sm default-sort d-flex align-items-center me-2" title="{='ublaboo_datagrid.default_sort'|translate}">
+										<i class="{$iconPrefix}sort fa-fw"></i>
+									</a>
+									<a n:if="$filter_active" n:href="resetFilter!" class="ajax btn btn-danger btn-sm reset-filter d-flex align-items-center me-2" title="{='ublaboo_datagrid.reset_filter'|translate}">
+										<i class="{$iconPrefix}undo fa-fw"></i>
+									</a>
+									{if $control->isPaginated()}
+										{input $filter['perPage'], data-autosubmit-per-page => $control->hasAutoSubmit(), class => 'input-sm form-select select-one'}
+										{if !$control->hasAutoSubmit()}
+											{input $filter['perPage_submit'], class => 'datagrid-per-page-submit btn btn-sm btn-secondary ms-2'}
+										{/if}
+									{/if}
+								</div>
+							</div>
+						</div>
+					</div>
+				{/if}
 			{/form}
 		{/snippetArea}
 	</div>

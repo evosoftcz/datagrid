@@ -626,3 +626,32 @@ tr.filter-row .form-control, tr.filter-row .ts-control {
 .datagrid table thead tr.row-group-actions select.form-select:disabled, .datagrid table thead tr.row-group-actions div.ts-wrapper.disabled  {
     visibility: hidden !important;
 }
+
+.datagrid .datagrid-footer-sticky-left {
+	position: sticky;
+	left: 0;
+	flex-shrink: 0;
+	background: inherit;
+	padding-right: 0.5rem;
+	z-index: 1;
+}
+
+.datagrid .datagrid-footer-sticky-center {
+	position: sticky;
+	left: 50%;
+	transform: translateX(-50%);
+	flex-shrink: 0;
+	background: inherit;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	z-index: 1;
+}
+
+.datagrid .datagrid-footer-sticky-right {
+	position: sticky;
+	right: 0;
+	flex-shrink: 0;
+	background: inherit;
+	padding-left: 0.5rem;
+	z-index: 1;
+}
