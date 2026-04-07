@@ -552,7 +552,7 @@
 					</table>
 				</div>
 
-				{* Footer below the table (outside table-responsive so it doesn't scroll horizontally) *}
+				{* === Footer below the table (outside table-responsive so it doesn't scroll horizontally) === *}
 				{if $control->isPaginated() || $filter_active}
 					<div n:snippet="paginationFooter" class="d-flex flex-nowrap align-items-center justify-content-between row-grid-bottom ms-auto py-2 px-3"
 					{if !$control->isNajaCache()}data-naja-snippet-cache="off"{/if} style="z-index: 50;">
