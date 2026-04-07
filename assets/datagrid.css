@@ -515,13 +515,6 @@ tr.filter-row .form-control, tr.filter-row .ts-control {
 	display: inline-block
 }
 
-.datagrid .row-grid-bottom .datagrid-per-page-submit {
-	position: absolute;
-	visibility: hidden;
-	width: 0;
-	top: -200px
-}
-
 .datagrid .pagination.active > span {
 	color: #fff
 }
