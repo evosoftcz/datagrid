@@ -380,6 +380,7 @@ class DataGrid extends Control
     protected ?int $maxColLabelForRows = null;
     protected string $class = '';
     protected bool $naja_cache = true;
+	protected bool $topPagination = false;
 
 
 	public function __construct(?IContainer $parent = null, ?string $name = null)
@@ -2809,6 +2810,24 @@ class DataGrid extends Control
 		}
 
 		return null;
+	}
+
+	/**
+	 * @param $topPagination
+	 * @return $this
+	 */
+	public function setTopPaginationEnabled($topPagination): DataGrid
+	{
+		$this->topPagination = $topPagination;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isTopPaginationEnabled(): bool
+	{
+		return $this->topPagination;
 	}
 
 

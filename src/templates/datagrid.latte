@@ -198,6 +198,33 @@
 	</div>
 
 </div>
+		<div class="datagrid-footer mb-2" n:snippet="pagination-top" n:if="$control->isTopPaginationEnabled()">
+
+			<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+				<div class="datagrid-items-count">
+					<small class="text-muted" n:if="$control->isPaginated()">
+						({var $paginator = $control['paginator']->getPaginator()}
+
+						{='ublaboo_datagrid.items'|translate}:
+						{$paginator->getOffset() + 1}
+						-
+						{sizeof($rows) + $paginator->getOffset()}
+						{='ublaboo_datagrid.from'|translate}
+						{$paginator->getItemCount()})
+					</small>
+				</div>
+
+				<div class="datagrid-pagination">
+					{control paginator}
+				</div>
+
+				<div class="datagrid-per-page d-flex align-items-center gap-2">
+				</div>
+
+			</div>
+
+		</div>
         <div class="table-responsive">
 				<table class="{block table-class}table table-hover table-striped table-bordered table-sm text-wrap{/block}" n:snippet="table" n:block="data" {if !$control->isNajaCache()}data-naja-snippet-cache="off"{/if}>
 					<thead n:block="header">
