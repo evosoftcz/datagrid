@@ -66,4 +66,23 @@ class ColumnDateTime extends Column
 
 		return $this;
 	}
+
+
+	/**
+	 * What sorting will be applied after next click?
+	 * Reverse sorting order for datetime as newest records are usually preferred
+	 * @return array
+	 */
+	public function getSortNext(): array
+	{
+		if ($this->sort == 'ASC') {
+			return [$this->key => false];
+		}
+
+		if ($this->sort == 'DESC') {
+			return [$this->key => 'ASC'];
+		}
+
+		return [$this->key => 'DESC'];
+	}
 }
