@@ -202,6 +202,7 @@
 						{/foreach}
 						<th n:if="$actions || $control->isSortable() || $items_detail || $inlineEdit || $inlineAdd" class="col-action text-center">
 							{='ublaboo_datagrid.action'|translate}
+                            <div class="expand-all-rows" title="Expand all rows"><i class="fa fa-expand-arrows-alt"></i><i class="fa fa-compress-arrows-alt"></i></div>
 						</th>
 					</tr>
 					<tr n:block="header-filters" n:if="!empty($filters) && !$control->hasOuterFilterRendering()">
@@ -300,24 +301,27 @@
 											{$td->endTag()|noescape}
 										{/foreach}
 										<td n:if="$actions || $control->isSortable() || $items_detail || $inlineEdit || $inlineAdd" class="col-action">
-											{foreach $actions as $key => $action}
-												{if $row->hasAction($key)}
-													{if $action->hasTemplate()}
-														{include $action->getTemplate(), item => $item, (expand) $action->getTemplateVariables(), row => $row}
-													{else}
-														{$action->render($row)|noescape}
+											<div class="td-inner">
+												{foreach $actions as $key => $action}
+													{if $row->hasAction($key)}
+														{if $action->hasTemplate()}
+															{include $action->getTemplate(), item => $item, (expand) $action->getTemplateVariables(), row => $row}
+														{else}
+															{$action->render($row)|noescape}
+														{/if}
 													{/if}
+												{/foreach}
+												<span class="handle-sort btn btn-xs btn-default btn-secondary" n:if="$control->isSortable()">
+													<i n:block = "icon-arrows-v" class="{$icon_prefix}arrows-v"></i>
+												</span>
+												{if $inlineEdit && $row->hasInlineEdit()}
+													{$inlineEdit->renderButton($row)|noescape}
 												{/if}
-											{/foreach}
-											<span class="handle-sort btn btn-xs btn-default btn-secondary" n:if="$control->isSortable()">
-												<i n:block = "icon-arrows-v" class="{$icon_prefix}arrows-v"></i>
-											</span>
-											{if $inlineEdit && $row->hasInlineEdit()}
-												{$inlineEdit->renderButton($row)|noescape}
-											{/if}
-											{if $items_detail && $items_detail->shouldBeRendered($row)}
-												{$items_detail->renderButton($row)|noescape}
-											{/if}
+												{if $items_detail && $items_detail->shouldBeRendered($row)}
+													{$items_detail->renderButton($row)|noescape}
+												{/if}
+                                            </div>
+                                            <div class="expand-row" title="Expand row"><i class="fa fa-expand-alt"></i><i class="fa fa-compress-alt"></i></div>
 										</td>
 									</tr>
 								{/if}
@@ -536,9 +540,9 @@
 			{include #$col, item => $item}
 		{else}
 			{if $column->isTemplateEscaped()}
-				{$column->render($row)}
+				<div class="td-inner">{$column->render($row)}</div>
 			{else}
-				{$column->render($row)|noescape}
+				<div class="td-inner">{$column->render($row)|noescape}</div>
 			{/if}
 		{/ifset}
 	{/if}
