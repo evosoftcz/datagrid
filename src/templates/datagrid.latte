@@ -301,7 +301,7 @@
 											{$td->endTag()|noescape}
 										{/foreach}
 										<td n:if="$actions || $control->isSortable() || $items_detail || $inlineEdit || $inlineAdd" class="col-action">
-											<div class="td-inner">
+											<div class="td-inner" style="padding:0.25rem 1rem">
 												{foreach $actions as $key => $action}
 													{if $row->hasAction($key)}
 														{if $action->hasTemplate()}
@@ -321,7 +321,10 @@
 													{$items_detail->renderButton($row)|noescape}
 												{/if}
                                             </div>
-                                            <div class="expand-row" title="Expand row"><i class="fa fa-expand-alt"></i><i class="fa fa-compress-alt"></i></div>
+                                            <div class="expand-row" title="Expand row">
+                                            	<i class="fa fa-expand-alt"></i>
+                                            	<i class="fa fa-compress-alt"></i>
+                                            </div>
 										</td>
 									</tr>
 								{/if}
