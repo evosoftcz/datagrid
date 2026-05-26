@@ -2813,10 +2813,10 @@ class DataGrid extends Control
 	}
 
 	/**
-	 * @param $topPagination
+	 * @param bool $topPagination
 	 * @return $this
 	 */
-	public function setTopPaginationEnabled($topPagination): DataGrid
+	public function setTopPaginationEnabled(bool $topPagination = true): DataGrid
 	{
 		$this->topPagination = $topPagination;
 		return $this;
