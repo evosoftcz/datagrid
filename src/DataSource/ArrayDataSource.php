@@ -135,36 +135,25 @@ class ArrayDataSource implements IDataSource
 		}
 
 		$sort = $sorting->getSort();
+		$items = $this->data;
 
-		foreach ($sort as $column => $order) {
-			$data = [];
-
-			foreach ($this->data as $item) {
-				$sort_by = is_object($item[$column]) && $item[$column] instanceof DateTimeInterface
-					? $item[$column]->format('Y-m-d H:i:s')
-					: (string) $item[$column];
-
-				$data[$sort_by][] = $item;
-			}
-
-			if ($order === 'ASC') {
-				ksort($data);
-			} else {
-				krsort($data);
-			}
-
-			$dataSource = [];
-
-			foreach ($data as $i) {
-				foreach ($i as $item) {
-					$dataSource[] = $item;
+		// # 17335 / #17348 - better sorting, when there are several columns (for example date + reoccurring sequence)
+		usort($items, function ($a, $b) use ($sort)
+		{
+			foreach ($sort as $column => $order)
+			{
+				$difference = ($order === "ASC") ? $a[$column] <=> $b[$column] : $b[$column] <=> $a[$column];
+				if ($difference !== 0)
+				{
+					return $difference;
 				}
 			}
+			return 0;
+		});
 
-			$this->setData($dataSource);
-		}
-
+		$this->setData($items);
 		return $this;
+
 	}
 
 
