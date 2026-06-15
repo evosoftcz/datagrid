@@ -402,8 +402,9 @@ class DataGrid extends Control
 	 * @param string $key
 	 * @return string
 	 */
-	protected function withPrefix(string $key) : string
+	protected function withPrefix(?string $key) : string
 	{
+		$key = $key ?? "";
 		return ($this->sessionKeyPrefix) ? $this->sessionKeyPrefix . $key : $key;
 	}
 
@@ -412,10 +413,13 @@ class DataGrid extends Control
 	 * @param string $key
 	 * @return string
 	 */
-	protected function withoutPrefix(string $key) : string
+	protected function withoutPrefix(?string $key) : string
 	{
+		$key = $key ?? "";
 		return ($this->sessionKeyPrefix) ? str_replace(($this->sessionKeyPrefix), "", $key) : $key;
 	}
+
+
 
 	/**
 	 * @return array<string> All session keys.
@@ -3296,9 +3300,24 @@ class DataGrid extends Control
 	 */
 	public function setColumnsHideable(): self
 	{
-		$this->canHideColumns = true;
-
+		$this->canHideColumns = $canHideColumns;
 		return $this;
+	}
+
+	/**
+	 * @return Action[]|MultiAction[]
+	 */
+	public function getActions(): array
+	{
+		return $this->actions;
+	}
+
+	/**
+	 * @return ToolbarButton[]
+	 */
+	public function getToolbarButtons(): array
+	{
+		return $this->toolbarButtons;
 	}
 
 
@@ -3637,7 +3656,9 @@ class DataGrid extends Control
 				sprintf('There is already action at key [%s] defined.', $key)
 			);
 		}
-	}/********************************************************************************
+	}
+	
+	/********************************************************************************
 	 *                                    FILTERS *
 	 ********************************************************************************/
 
