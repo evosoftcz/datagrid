@@ -407,37 +407,44 @@ class DataGrid extends Control
 		return ($this->sessionKeyPrefix) ? $this->sessionKeyPrefix . $key : $key;
 	}
 
+	/**
+	 * Detaches session key prefix.
+	 * @param string $key
+	 * @return string
+	 */
+	protected function withoutPrefix(string $key) : string
+	{
+		return ($this->sessionKeyPrefix) ? str_replace(($this->sessionKeyPrefix), "", $key) : $key;
+	}
 
 	/**
-	 * @param bool $isWithPrefix Determines if prefix should be attached.
 	 * @return array<string> All session keys.
 	 */
-	protected function getAllSessionKeys(bool $isWithPrefix = true) : array
+	protected function getAllSessionKeys() : array
 	{
 		return
 		[
-			($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_PER_PAGE) : self::$KEY_GRID_PER_PAGE,
-			($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_SORT) : self::$KEY_GRID_SORT,
-			($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_PAGE) : self::$KEY_GRID_PAGE,
-			($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_HAS_SORTED) : self::$KEY_GRID_HAS_SORTED,
-			($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_HAS_FILTERED) : self::$KEY_GRID_HAS_FILTERED,
-			($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS) : self::$KEY_GRID_HIDDEN_COLUMNS,
-			($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED) : self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED
+			self::$KEY_GRID_PER_PAGE,
+			self::$KEY_GRID_SORT,
+			self::$KEY_GRID_PAGE,
+			self::$KEY_GRID_HAS_SORTED,
+			self::$KEY_GRID_HAS_FILTERED,
+			self::$KEY_GRID_HIDDEN_COLUMNS,
+			self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED
 		];
 	}
 
 
 	/**
 	 * Returns keys that are used in hiding/showing datagrid's columns logic.
-	 * @param bool $isWithPrefix Determines if prefix should be attached.
 	 * @return array<string> Only "KEY_GRID_HIDDEN_COLUMNS" and "KEY_GRID_HIDDEN_COLUMNS_MANIPULATED".
 	 */
-	protected function getHiddenSessionKeys(bool $isWithPrefix = true) : array
+	protected function getHiddenSessionKeys() : array
 	{
 		return
 			[
-				($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS) : self::$KEY_GRID_HIDDEN_COLUMNS,
-				($isWithPrefix) ? $this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED) : self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED
+				self::$KEY_GRID_HIDDEN_COLUMNS,
+				self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED
 			];
 	}
 
@@ -972,7 +979,7 @@ class DataGrid extends Control
 			return;
 		}
 
-		if ((bool) $this->getSessionData($this->withPrefix(self::$KEY_GRID_HAS_SORTED))) {
+		if ((bool) $this->getSessionData(self::$KEY_GRID_HAS_SORTED)) {
 			return;
 		}
 
@@ -980,7 +987,7 @@ class DataGrid extends Control
 			$this->sort = $this->defaultSort;
 		}
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_SORT), $this->sort);
+		$this->saveSessionData(self::$KEY_GRID_SORT, $this->sort);
 	}
 
 
@@ -1530,7 +1537,7 @@ class DataGrid extends Control
 	{
 		$this->filter = $filter;
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HAS_FILTERED), 1);
+		$this->saveSessionData(self::$KEY_GRID_HAS_FILTERED, 1);
 
 		return $this;
 	}
@@ -1594,7 +1601,7 @@ class DataGrid extends Control
 			return;
 		}
 
-		if ((bool) $this->getSessionData($this->withPrefix(self::$KEY_GRID_HAS_FILTERED))) {
+		if ((bool) $this->getSessionData(self::$KEY_GRID_HAS_FILTERED)) {
 			return;
 		}
 
@@ -1769,7 +1776,7 @@ class DataGrid extends Control
 		 * Per page
 		 */
 		if (isset($values['perPage'])) {
-			$this->saveSessionData($this->withPrefix(self::$KEY_GRID_PER_PAGE), $values['perPage']);
+			$this->saveSessionData(self::$KEY_GRID_PER_PAGE, $values['perPage']);
 			$this->perPage = $values['perPage'];
 		}
 
@@ -1868,7 +1875,7 @@ class DataGrid extends Control
 				 * Has been filter changed?
 				 */
 				$this->page = 1;
-				$this->saveSessionData($this->withPrefix(self::$KEY_GRID_PAGE), 1);
+				$this->saveSessionData(self::$KEY_GRID_PAGE, 1);
 			}
 
 			$this->saveSessionData((string) $key, $value);
@@ -1880,7 +1887,7 @@ class DataGrid extends Control
 		}
 
 		if ($values->count() > 0) {
-			$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HAS_FILTERED), 1);
+			$this->saveSessionData(self::$KEY_GRID_HAS_FILTERED, 1);
             foreach ($this->filter as $k => $item) {
                 if (is_iterable($item)) {
                     $empty = 0;
@@ -1991,19 +1998,19 @@ class DataGrid extends Control
 			return;
 		}
 
-		$page = $this->getSessionData($this->withPrefix(self::$KEY_GRID_PAGE));
+		$page = $this->getSessionData(self::$KEY_GRID_PAGE);
 
 		if ($page !== null) {
 			$this->page = (int) $page;
 		}
 
-		$perPage = $this->getSessionData($this->withPrefix(self::$KEY_GRID_PER_PAGE));
+		$perPage = $this->getSessionData(self::$KEY_GRID_PER_PAGE);
 
 		if ($perPage !== null) {
 			$this->perPage = $perPage;
 		}
 
-		$sort = $this->getSessionData($this->withPrefix(self::$KEY_GRID_SORT));
+		$sort = $this->getSessionData(self::$KEY_GRID_SORT);
 
 		if (is_array($sort) && $sort !== []) {
 			$this->sort = $sort;
@@ -2011,9 +2018,9 @@ class DataGrid extends Control
 
 		foreach ($this->getSessionData() as $key => $value)
 		{
-			if (!in_array($key, $this->getAllSessionKeys(), true)) {
+			if (!in_array($this->withoutPrefix($key), $this->getAllSessionKeys(), true)) {
 				try {
-					$stringKey = (string) $key;
+					$stringKey = $this->withoutPrefix($key);
 					$this->getFilter($stringKey);
 					$this->filter[$stringKey] = $value;
 				} catch (DataGridException $e) {
@@ -2035,7 +2042,7 @@ class DataGrid extends Control
 					$column = $this->getColumn((string) $key);
 
 				} catch (DataGridColumnNotFoundException $e) {
-					$this->deleteSessionData($this->withPrefix(self::$KEY_GRID_SORT));
+					$this->deleteSessionData(self::$KEY_GRID_SORT);
 					$this->sort = [];
 
 					return;
@@ -2226,7 +2233,7 @@ class DataGrid extends Control
 	public function handlePage(int $page): void
 	{
 		$this->page = $page;
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_PAGE), $page);
+		$this->saveSessionData(self::$KEY_GRID_PAGE, $page);
 
 		$this->reload(['table']);
 	}
@@ -2249,7 +2256,7 @@ class DataGrid extends Control
 			}
 
 			if ($column->sortableResetPagination()) {
-				$this->saveSessionData($this->withPrefix(self::$KEY_GRID_PAGE), $this->page = 1);
+				$this->saveSessionData(self::$KEY_GRID_PAGE, $this->page = 1);
 			}
 
 			if ($column->getSortableCallback() !== null) {
@@ -2257,8 +2264,8 @@ class DataGrid extends Control
 			}
 		}
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HAS_SORTED), 1);
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_SORT), $this->sort = $sort);
+		$this->saveSessionData(self::$KEY_GRID_HAS_SORTED, 1);
+		$this->saveSessionData(self::$KEY_GRID_SORT, $this->sort = $sort);
 
 		$this->reloadTheWholeGrid();
     }
@@ -2284,7 +2291,7 @@ class DataGrid extends Control
 			}
 
 			if ($column->sortableResetPagination()) {
-				$this->saveSessionData($this->withPrefix(self::$KEY_GRID_PAGE), $this->page = 1);
+				$this->saveSessionData(self::$KEY_GRID_PAGE, $this->page = 1);
 			}
 
 			if ($column->getSortableCallback() !== null) {
@@ -2292,8 +2299,8 @@ class DataGrid extends Control
 			}
 		}
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HAS_SORTED), 1);
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_SORT), $this->sort = $sort);
+		$this->saveSessionData(self::$KEY_GRID_HAS_SORTED, 1);
+		$this->saveSessionData(self::$KEY_GRID_SORT, $this->sort = $sort);
 
 		$this->reloadTheWholeGrid();
 	}
@@ -2304,14 +2311,14 @@ class DataGrid extends Control
 		/**
 		 * Session stuff
 		 */
-		$this->deleteSessionData($this->withPrefix(self::$KEY_GRID_PAGE));
+		$this->deleteSessionData(self::$KEY_GRID_PAGE);
 
 		if ($this->defaultFilterUseOnReset) {
-			$this->deleteSessionData($this->withPrefix(self::$KEY_GRID_HAS_FILTERED));
+			$this->deleteSessionData(self::$KEY_GRID_HAS_FILTERED);
 		}
 
 		if ($this->defaultSortUseOnReset) {
-			$this->deleteSessionData($this->withPrefix(self::$KEY_GRID_HAS_SORTED));
+			$this->deleteSessionData(self::$KEY_GRID_HAS_SORTED);
 		}
 
 		$sessionData = is_array($this->getSessionData())
@@ -2320,9 +2327,9 @@ class DataGrid extends Control
 
 		foreach (array_keys($sessionData) as $key)
 		{
-			if (!in_array($key, $this->getAllSessionKeys(), true))
+			if (!in_array($this->withoutPrefix($key), $this->getAllSessionKeys(), true))
 			{
-				$this->deleteSessionData((string) $key);
+				$this->deleteSessionData($this->withoutPrefix((string) $key));
 			}
 		}
 
@@ -2575,7 +2582,7 @@ class DataGrid extends Control
 	}
 
 
-	public function handleChangeStatus(string $id, string $key, string $value): void
+	public function handleChangeStatus(string $id, string $key, ?string $value): void
 	{
 		if (!isset($this->columns[$key])) {
 			throw new DataGridException(sprintf('ColumnStatus[%s] does not exist', $key));
@@ -2609,8 +2616,8 @@ class DataGrid extends Control
 
 	public function handleShowAllColumns(): void
 	{
-		$this->deleteSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS));
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED), true);
+		$this->deleteSessionData(self::$KEY_GRID_HIDDEN_COLUMNS);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED, true);
 
 		$this->redrawControl();
 		$this->onRedraw();
@@ -2619,8 +2626,8 @@ class DataGrid extends Control
 
 	public function handleShowDefaultColumns(): void
 	{
-		$this->deleteSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS));
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED), false);
+		$this->deleteSessionData(self::$KEY_GRID_HIDDEN_COLUMNS);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED, false);
 
 		$this->redrawControl();
 		$this->onRedraw();
@@ -2629,7 +2636,7 @@ class DataGrid extends Control
 
 	public function handleShowColumn(string $column): void
 	{
-		$columns = $this->getSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS));
+		$columns = $this->getSessionData(self::$KEY_GRID_HIDDEN_COLUMNS);
 
 		if ($columns !== []) {
 			$pos = array_search($column, $columns, true);
@@ -2639,8 +2646,8 @@ class DataGrid extends Control
 			}
 		}
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS), $columns);
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED), true);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS, $columns);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED, true);
 
 		$this->redrawControl();
         $this->getPresenter()->payload->postGet = true;
@@ -2654,7 +2661,7 @@ class DataGrid extends Control
 		/**
 		 * Store info about hiding a column to session
 		 */
-		$columns = $this->getSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS));
+		$columns = $this->getSessionData(self::$KEY_GRID_HIDDEN_COLUMNS);
 
 		if ($columns === [] || $columns === null) {
 			$columns = [$column];
@@ -2662,8 +2669,8 @@ class DataGrid extends Control
 			array_push($columns, $column);
 		}
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS), $columns);
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED), true);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS, $columns);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED, true);
 
 		$this->redrawControl();
         $this->getPresenter()->payload->postGet = true;
@@ -2679,7 +2686,7 @@ class DataGrid extends Control
 		/**
 		 * Store info about hiding a column to session
 		 */
-		$sessionHiddenColumns = $this->getSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS));
+		$sessionHiddenColumns = $this->getSessionData(self::$KEY_GRID_HIDDEN_COLUMNS);
 
 		foreach ($columns as $column => $params){
 			foreach ($params as $param){
@@ -2698,8 +2705,8 @@ class DataGrid extends Control
 			}
 		}
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS), $sessionHiddenColumns);
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED), true);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS, $sessionHiddenColumns);
+		$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED, true);
 
 		$this->redrawControl();
         $this->getPresenter()->payload->postGet = true;
@@ -2772,7 +2779,7 @@ class DataGrid extends Control
 			$this->perPage = $this->defaultPerPage;
 		}
 
-		$this->saveSessionData($this->withPrefix(self::$KEY_GRID_PER_PAGE), $this->perPage);
+		$this->saveSessionData(self::$KEY_GRID_PER_PAGE, $this->perPage);
 	}
 
 
@@ -2969,50 +2976,55 @@ class DataGrid extends Control
 
 
 	/**
-	 * @param mixed $defaultValue
+	 * Gets session variable by key; automatically adds prefix to the $key.
+	 * @param string|null $key
+	 * @param mixed|null $defaultValue
 	 * @return mixed
 	 */
-	public function getSessionData(?string $key = null, $defaultValue = null)
+	public function getSessionData(?string $key = null, mixed $defaultValue = null)
 	{
-		$getValue = function() use ($key, $defaultValue) {
-			return ($key !== null ? $this->gridSession[$key] : $this->gridSession) ?? $defaultValue;
-		};
 
-		if ($this->rememberState) {
-			return ($getValue)();
-		}
+		$canReadSession =
+			$this->rememberState
+			|| ($this->rememberHideableColumnsState && in_array($key, $this->getHiddenSessionKeys(), true));
 
-		if ($this->rememberHideableColumnsState
-			&& in_array($key, $this->getHiddenSessionKeys(), true))
+		if ($canReadSession)
 		{
-			return ($getValue)();
+			return ($key !== null ?
+				$this->gridSession[$this->withPrefix($key)] : $this->gridSession) ?? $defaultValue;
 		}
 
-		return $key === null
-			? []
-			: $defaultValue;
+		return $key === null ? [] : $defaultValue;
+
 	}
 
 
 	/**
+	 * Saves session variable; automatically adds prefix to the $key.
+	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function saveSessionData(string $key, $value): void
+	public function saveSessionData(string $key, mixed $value): void
 	{
-		if ($this->rememberState) {
-			$this->gridSession[$key] = $value;
+		if ($this->rememberState)
+		{
+			$this->gridSession[$this->withPrefix($key)] = $value;
 		}
 		elseif ($this->rememberHideableColumnsState
 			&& in_array($key, $this->getHiddenSessionKeys(), true))
 		{
-			$this->gridSession[$key] = $value;
+			$this->gridSession[$this->withPrefix($key)] = $value;
 		}
 	}
 
-
+	/**
+	 * Deletes session variable; automatically adds prefix to the $key.
+	 * @param string $key
+	 * @return void
+	 */
 	public function deleteSessionData(string $key): void
 	{
-		unset($this->gridSession[$key]);
+		unset($this->gridSession[$this->withPrefix($key)]);
 	}
 
 
@@ -3420,7 +3432,7 @@ class DataGrid extends Control
 		try {
 			$this->getParentComponent();
 
-			if (! (bool) $this->getSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED), false)) {
+			if (! (bool) $this->getSessionData(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED, false)) {
 				$columns_to_hide = [];
 
 				foreach ($this->columns as $key => $column) {
@@ -3431,12 +3443,12 @@ class DataGrid extends Control
 
 				if ($columns_to_hide !== [])
 				{
-					$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS), $columns_to_hide);
-					$this->saveSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED), true);
+					$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS, $columns_to_hide);
+					$this->saveSessionData(self::$KEY_GRID_HIDDEN_COLUMNS_MANIPULATED, true);
 				}
 			}
 
-			$hidden_columns = $this->getSessionData($this->withPrefix(self::$KEY_GRID_HIDDEN_COLUMNS), []);
+			$hidden_columns = $this->getSessionData(self::$KEY_GRID_HIDDEN_COLUMNS, []);
 
 			foreach ($hidden_columns as $column) {
 				if (isset($this->columns[$column])) {
