@@ -905,3 +905,129 @@ dataGridRegisterExtension('datagrid.reset-filter-by-column', {
 		}
 	}
 });
+
+/**
+ * Column chooser opened from a datagrid rendered inside a modal.
+ *
+ * The chooser modal is part of the datagrid template, so when the datagrid
+ * itself sits inside a modal, the chooser is that modal's descendant. Two things
+ * then go wrong in Bootstrap 5:
+ *
+ *  1. It shows one modal at a time - the [data-bs-toggle="modal"] handler hides
+ *     whatever modal is open before showing the target one, which here means the
+ *     window holding the datagrid. The chooser disappears with it and only the
+ *     backdrop is left, blocking the page.
+ *  2. An open modal is position:fixed with a z-index and therefore a stacking
+ *     context. A chooser left inside it is stacked within the parent, while its
+ *     own backdrop is a child of <body> - the backdrop would cover the chooser,
+ *     which renders dimmed and unclickable.
+ *
+ * So for a trigger that belongs to a datagrid and sits inside a modal we take
+ * over: Bootstrap's handler is stopped, the chooser is moved to <body>, stacked
+ * above its parent and put back into the datagrid on close, which keeps AJAX
+ * snippet redraws working. Focus is claimed back as well, otherwise the parent's
+ * focus trap - still active while the chooser is being shown - pulls it onto
+ * itself and Escape closes the parent, discarding an unsaved form.
+ *
+ * Triggers outside a modal, and modals that do not belong to a datagrid, are
+ * left to stock Bootstrap.
+ */
+(function () {
+	'use strict';
+
+	// keeps the nested modal above its parent, and its backdrop between the two
+	var STACK_STEP = 20;
+
+	document.addEventListener('click', function (event) {
+		if (typeof bootstrap === 'undefined' || !event.target || !event.target.closest) {
+			return;
+		}
+
+		var trigger = event.target.closest('[data-bs-toggle="modal"]');
+		if (!trigger || !trigger.closest('.datagrid')) {
+			return; // not ours
+		}
+
+		var parentModal = trigger.closest('.modal');
+		if (!parentModal) {
+			return; // not nested - stock Bootstrap behaviour is correct
+		}
+
+		var selector = trigger.getAttribute('data-bs-target') || trigger.getAttribute('href');
+		if (!selector || selector.charAt(0) !== '#' || selector.length < 2) {
+			return;
+		}
+
+		var target;
+		try {
+			target = document.querySelector(selector);
+		} catch (e) {
+			return; // not a usable selector, e.g. href="#"
+		}
+
+		if (!target || target === parentModal || target.contains(parentModal)) {
+			return;
+		}
+
+		// stop Bootstrap's own handler, which would hide parentModal
+		event.preventDefault();
+		event.stopImmediatePropagation();
+
+		// remember where the modal belongs, so the DOM can be restored on close
+		var origParent = target.parentElement;
+		var origNext = target.nextSibling;
+		var moved = false;
+
+		if (origParent && origParent !== document.body) {
+			document.body.appendChild(target);
+			moved = true;
+		}
+
+		var parentZ = parseInt(window.getComputedStyle(parentModal).zIndex, 10) || 1055;
+
+		target.addEventListener('shown.bs.modal', function () {
+			target.style.zIndex = String(parentZ + STACK_STEP);
+
+			var backdrops = document.querySelectorAll('.modal-backdrop');
+			var own = backdrops[backdrops.length - 1];
+			if (own) {
+				own.style.zIndex = String(parentZ + STACK_STEP - 1);
+			}
+
+			// Bootstrap's FocusTrap focuses the modal before it unregisters the
+			// parent's trap, and the parent no longer contains this modal
+			if (!target.contains(document.activeElement)) {
+				target.focus();
+			}
+		}, { once: true });
+
+		target.addEventListener('hidden.bs.modal', function () {
+			target.style.zIndex = '';
+
+			if (moved && origParent && origParent.isConnected) {
+				// an AJAX redraw may have recreated the modal in the meantime;
+				// in that case drop ours instead of introducing a duplicate id
+				var replacement = null;
+				if (target.id) {
+					replacement = origParent.querySelector('[id="' + target.id + '"]');
+				}
+
+				if (replacement && replacement !== target) {
+					target.remove();
+				} else if (origNext && origNext.parentNode === origParent) {
+					origParent.insertBefore(target, origNext);
+				} else {
+					origParent.appendChild(target);
+				}
+			}
+
+			// Bootstrap resets the page as if no modal were open; the parent one
+			// still is, so its scroll lock has to be put back
+			if (parentModal.classList.contains('show')) {
+				document.body.classList.add('modal-open');
+			}
+		}, { once: true });
+
+		bootstrap.Modal.getOrCreateInstance(target).show();
+	}, true);
+})();
