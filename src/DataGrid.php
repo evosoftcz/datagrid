@@ -2868,8 +2868,26 @@ class DataGrid extends Nette\Application\UI\Control
 			$list[$key] = $key;
 		}
 
-		if (array_key_exists('all', $list)) {
-			$list['all'] = $this->getTranslator()->translate('ublaboo_datagrid.all');
+//		if (array_key_exists('all', $list)) {
+//			$list['all'] = $this->getTranslator()->translate('ublaboo_datagrid.all');
+//		}
+
+		// #17808: enforce a global ceiling of 1000 rows per page across all (non-uniform) grids.
+		// Drop the unbounded 'all' option and clamp away any option above 1000 - rendering huge
+		// overviews in a single page caused perf/timeout issues. When 'all' was offered, substitute
+		// 1000 so a "show many" option still remains; grids that intentionally cap lower (no 'all')
+		// keep their own list untouched. Applied regardless of any filter.
+		$offered_all = array_key_exists('all', $list);
+
+		foreach ($list as $key => $value) {
+			if ($key === 'all' || (is_numeric($key) && (int) $key > 1000)) {
+				unset($list[$key]);
+			}
+		}
+
+		if ($offered_all && !array_key_exists(1000, $list)) {
+			$list[1000] = 1000;
+			ksort($list, SORT_NUMERIC);
 		}
 
 		return $list;
