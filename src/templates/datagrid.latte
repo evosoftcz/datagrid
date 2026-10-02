@@ -202,7 +202,7 @@
 
 			<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
 
-				<div class="datagrid-items-count">
+				<div class="datagrid-items-count" style="flex:1 1 0">
 					<small class="text-muted" n:if="$control->isPaginated()">
 						({var $paginator = $control['paginator']->getPaginator()}
 
@@ -215,11 +215,11 @@
 					</small>
 				</div>
 
-				<div class="datagrid-pagination">
+				<div class="datagrid-pagination" style="flex:1 1 0">
 					{control paginator}
 				</div>
 
-				<div class="datagrid-per-page d-flex align-items-center gap-2">
+				<div class="datagrid-per-page d-flex align-items-center gap-2" style="flex:1 1 0">
 				</div>
 
 			</div>
@@ -578,7 +578,7 @@
 
 	<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
 
-		<div class="datagrid-items-count">
+		<div class="datagrid-items-count" style="flex:1 1 0">
 			<small class="text-muted" n:if="$control->isPaginated()">
 				({var $paginator = $control['paginator']->getPaginator()}
 
@@ -591,14 +591,24 @@
 			</small>
 		</div>
 
-		<div class="datagrid-pagination">
+		<div class="datagrid-pagination" style="flex:1 1 0">
 			{control paginator}
 		</div>
 
-		<div class="datagrid-per-page d-flex align-items-center gap-2">
+		<div class="datagrid-per-page d-flex align-items-center gap-2" style="flex:1 1 0">
+
+			{* 11517-R2: restore Default sort + global Reset filter (dropped in footer rewrite) *}
+			<a n:if="$show_default_sort_button" n:href="defaultSort!" class="ajax btn btn-secondary btn-sm default-sort d-flex align-items-center" title="{='ublaboo_datagrid.default_sort'|translate}">
+				<i class="{$iconPrefix}sort fa-fw"></i>
+			</a>
+			<a n:if="$filter_active" n:href="resetFilter!" class="ajax btn btn-danger btn-sm reset-filter d-flex align-items-center" title="{='ublaboo_datagrid.reset_filter'|translate}">
+				<i class="{$iconPrefix}undo fa-fw"></i>
+			</a>
+
 
 			{if $control->isPaginated()}
-				{input $filter['perPage'], class => 'form-select select-one'}
+				{* 11517-R3: restore data-autosubmit-per-page (listens datagrid.js:154) *}
+				{input $filter['perPage'], data-autosubmit-per-page => $control->hasAutoSubmit(), class => 'form-select select-one'}
 
 				{if !$control->hasAutoSubmit()}
 					{input $filter['perPage_submit'], class => 'btn btn-secondary btn-sm'}
