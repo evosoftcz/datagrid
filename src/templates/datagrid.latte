@@ -215,11 +215,11 @@
 					</small>
 				</div>
 
-				<div class="datagrid-pagination" style="flex:1 1 0">
+				<div class="datagrid-pagination d-flex justify-content-center" style="flex:1 1 0">
 					{control paginator}
 				</div>
 
-				<div class="datagrid-per-page d-flex align-items-center gap-2" style="flex:1 1 0">
+				<div class="datagrid-per-page d-flex align-items-center justify-content-end gap-2" style="flex:1 1 0">
 				</div>
 
 			</div>
@@ -591,11 +591,11 @@
 			</small>
 		</div>
 
-		<div class="datagrid-pagination" style="flex:1 1 0">
+		<div class="datagrid-pagination d-flex justify-content-center" style="flex:1 1 0">
 			{control paginator}
 		</div>
 
-		<div class="datagrid-per-page d-flex align-items-center gap-2" style="flex:1 1 0">
+		<div class="datagrid-per-page d-flex align-items-center justify-content-end gap-2" style="flex:1 1 0">
 
 			{* 11517-R2: restore Default sort + global Reset filter (dropped in footer rewrite) *}
 			<a n:if="$show_default_sort_button" n:href="defaultSort!" class="ajax btn btn-secondary btn-sm default-sort d-flex align-items-center" title="{='ublaboo_datagrid.default_sort'|translate}">
@@ -608,7 +608,7 @@
 
 			{if $control->isPaginated()}
 				{* 11517-R3: restore data-autosubmit-per-page (listens datagrid.js:154) *}
-				{input $filter['perPage'], data-autosubmit-per-page => $control->hasAutoSubmit(), class => 'form-select select-one'}
+				{input $filter['perPage'], data-autosubmit-per-page => $control->hasAutoSubmit(), class => 'form-select select-one w-auto'}
 
 				{if !$control->hasAutoSubmit()}
 					{input $filter['perPage_submit'], class => 'btn btn-secondary btn-sm'}
