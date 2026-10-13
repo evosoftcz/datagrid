@@ -204,14 +204,14 @@
 
 				<div class="datagrid-items-count" style="flex:1 1 0">
 					<small class="text-muted" n:if="$control->isPaginated()">
-						({var $paginator = $control['paginator']->getPaginator()}
+						({var $paginator = $control['paginator']->getPaginator()}{var $itemCountTotal = $paginator->getItemCount() ?? (sizeof($rows) + $paginator->getOffset())}
 
 						{='ublaboo_datagrid.items'|translate}:
-						{$paginator->getOffset() + 1}
+						{$itemCountTotal > 0 ? $paginator->getOffset() + 1 : 0}
 						-
 						{sizeof($rows) + $paginator->getOffset()}
 						{='ublaboo_datagrid.from'|translate}
-						{$paginator->getItemCount()})
+						{$itemCountTotal})
 					</small>
 				</div>
 
@@ -580,14 +580,14 @@
 
 		<div class="datagrid-items-count" style="flex:1 1 0">
 			<small class="text-muted" n:if="$control->isPaginated()">
-				({var $paginator = $control['paginator']->getPaginator()}
+				({var $paginator = $control['paginator']->getPaginator()}{var $itemCountTotal = $paginator->getItemCount() ?? (sizeof($rows) + $paginator->getOffset())}
 
 				{='ublaboo_datagrid.items'|translate}:
-				{$paginator->getOffset() + 1}
+				{$itemCountTotal > 0 ? $paginator->getOffset() + 1 : 0}
 				-
 				{sizeof($rows) + $paginator->getOffset()}
 				{='ublaboo_datagrid.from'|translate}
-				{$paginator->getItemCount()})
+				{$itemCountTotal})
 			</small>
 		</div>
 
