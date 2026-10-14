@@ -985,6 +985,55 @@ dataGridRegisterExtension('datagrid.reset-filter-by-column', {
 
 		var parentZ = parseInt(window.getComputedStyle(parentModal).zIndex, 10) || 1055;
 
+		// While the chooser is open it lives in <body>, so the focus may sit outside
+		// it - on the trigger inside the parent during the opening fade, or anywhere
+		// once an AJAX redraw or a click moves it. Bootstrap's Escape listener is bound
+		// to the modal element, so in those moments Escape would either close the parent
+		// (keydown bubbling from the trigger through the parent) or do nothing at all,
+		// leaving the chooser impossible to close with the keyboard. While the chooser is
+		// active we take Escape over in the capture phase: keys inside the chooser fall
+		// through to Bootstrap, everything else closes the chooser and never the parent.
+		//
+		// A capture-phase document listener must never outlive the chooser, or it would
+		// silently swallow Escape for the whole page. It is removed from every end-of-life
+		// signal - the chooser's hidden.bs.modal (normal close), the parent's
+		// hidden.bs.modal (parent torn down some other way), and defensively from the
+		// guard itself once its chooser is no longer in the DOM. A per-target flag keeps
+		// a rapid re-open from stacking a second guard.
+		if (!target.__escGuardBound) {
+			target.__escGuardBound = true;
+
+			// teardown stored on the node so the hidden handler below can reach it even
+			// on a re-open that skips this block; idempotent via the bound flag
+			target.__removeEscGuard = function () {
+				if (!target.__escGuardBound) {
+					return;
+				}
+				target.__escGuardBound = false;
+				document.removeEventListener('keydown', escGuard, true);
+				parentModal.removeEventListener('hidden.bs.modal', target.__removeEscGuard);
+			};
+
+			var escGuard = function (keyEvent) {
+				if (keyEvent.key !== 'Escape' && keyEvent.keyCode !== 27) {
+					return;
+				}
+				if (!target.isConnected) {
+					target.__removeEscGuard(); // chooser gone without firing hidden - self-heal
+					return;
+				}
+				if (target.contains(keyEvent.target)) {
+					return; // Escape inside the chooser - let Bootstrap close it normally
+				}
+				keyEvent.preventDefault();
+				keyEvent.stopImmediatePropagation();
+				bootstrap.Modal.getOrCreateInstance(target).hide();
+			};
+
+			document.addEventListener('keydown', escGuard, true);
+			parentModal.addEventListener('hidden.bs.modal', target.__removeEscGuard);
+		}
+
 		target.addEventListener('shown.bs.modal', function () {
 			target.style.zIndex = String(parentZ + STACK_STEP);
 
@@ -1002,6 +1051,9 @@ dataGridRegisterExtension('datagrid.reset-filter-by-column', {
 		}, { once: true });
 
 		target.addEventListener('hidden.bs.modal', function () {
+			if (target.__removeEscGuard) {
+				target.__removeEscGuard();
+			}
 			target.style.zIndex = '';
 
 			if (moved && origParent && origParent.isConnected) {
